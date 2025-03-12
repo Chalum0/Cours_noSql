@@ -93,6 +93,26 @@ def delete_count(item_id):
     db.delete_one({"_id": ObjectId(item_id)})
     return redirect(url_for('list_counts'))
 
+@app.route("/api/v1/search", methods=['GET', 'POST'])
+def search_counts():
+    global columns
+    db = get_db("Transilien")
+    if request.method == 'POST':
+        search_term = request.form.get('search_term', '')
+        query = {"nom_gare": {"$regex": search_term, "$options": "i"}}
+
+        fields = {'_id': 1}
+        for value in columns:
+            fields[value] = 1
+
+        cursor = db.find(query, fields)
+        stations = []
+        for document in cursor:
+            stations.append(document)
+
+        return render_template('search_results.html', stations=stations, search_term=search_term, fields=fields)
+    return render_template('search.html')
+
 
 
 if __name__ == "__main__":
