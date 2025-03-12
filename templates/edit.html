@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form method="POST">
+
+        {% for arg in ["nom_gare", "code_gare", "type_jour", "date", "annee", "ligne", "axe", "tranche_horaire", "somme_de_montants"] %}
+        <div class="form-group">
+            <label for="{{arg}}"></label>
+            <input type="text" id="{{arg}}" name="{{arg}}" placeholder="{{arg}}" value="{% if item %}{{item[arg]}}{% endif %}" required>
+        </div>
+
+        {% endfor %}
+
+
+        <div class="form-group">
+            <button type="submit">Enregistrer</button>
+            <a href="{{ url_for('list_counts') }}"><button type="button" class="cancel">Annuler</button></a>
+        </div>
+    </form>
+</body>
+</html>
