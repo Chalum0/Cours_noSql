@@ -5,15 +5,60 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <style>
+        #navigation{
+            display: flex;
+        }
+    </style>
 </head>
 <body>
+
+    <form action="/api/v1/{{ page }}" method="get">
+        <input type="checkbox" name="options" value="type_jour" {% if fields['type_jour'] %} checked {% endif %}> type_jour <br>
+        <input type="checkbox" name="options" value="date" {% if fields['date'] %} checked {% endif %}> date <br>
+        <input type="checkbox" name="options" value="annee" {% if fields['annee'] %} checked {% endif %}> annee <br>
+        <input type="checkbox" name="options" value="ligne" {% if fields['ligne'] %} checked {% endif %}> ligne <br>
+        <input type="checkbox" name="options" value="axe" {% if fields['axe'] %} checked {% endif %}> axe <br>
+        <input type="checkbox" name="options" value="tranche_horaire" {% if fields['tranche_horaire'] %} checked {% endif %}> tranche_horaire <br>
+        <input type="checkbox" name="options" value="somme_de_montants" {% if fields['somme_de_montants'] %} checked {% endif %}> somme_de_montants <br>
+
+       <div class="sort-options">
+           <label>Sort by somme_de_montants:</label>
+           <input type="radio" id="sort_asc" name="sort_order" value="asc" {% if sort_order == 'asc' %} checked {% endif %}>
+           <label for="sort_asc">Least to Most</label>
+           <input type="radio" id="sort_desc" name="sort_order" value="desc" {% if sort_order == 'desc' %} checked {% endif %}>
+           <label for="sort_desc">Most to Least</label>
+           <input type="radio" id="sort_none" name="sort_order" value="" {% if not sort_order %} checked {% endif %}>
+           <label for="sort_none">No Sort</label>
+       </div>
+
+        <label for="num_items">Number of items:</label>
+        <select name="num_items" id="num_items">
+            <option value="20" {% if nbitems == 20 %} selected {% endif %}>20</option>
+            <option value="50" {% if nbitems == 50 %} selected {% endif %}>50</option>
+            <option value="100" {% if nbitems == 100 %} selected {% endif %}>100</option>
+        </select>
+
+        <br><br>
+
+        <input type="submit" value="Submit">
+    </form>
+
+    <div id="navigation">
+        <a href="/api/v1/{{ page - 1 }}?{{ query }}">previous</a>
+        <p>page {{ page }}</p>
+        <a href="/api/v1/{{ page + 1 }}?{{ query }}">next</a>
+    </div>
+
     <ul>
     {% for station in stations %}
         <li>
-            <div>
-                {{ station["_id"] }}
-                {{ station["nom_gare"] }}
-                {{ station["somme_de_montants"] }}
+            <div id="{{ station['_id'] }}">
+                {% for field in fields %}
+                    {% if not field == '_id' %}
+                        {{ station[field] }}
+                    {% endif %}
+                {% endfor %}
             </div>
         </li>
     {% endfor %}
